@@ -1,7 +1,7 @@
 import { prismaClient } from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod"
-const  YT_REGEX = new RegExp("https:\/\/youtu\.be\/[A-Za-z0-9_-]+");
+const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
 
 const createStreamSchema = z.object({
     creatorId: z.string(),
@@ -11,7 +11,7 @@ const createStreamSchema = z.object({
 export async function POST(req:NextRequest){
    try{
     const data = createStreamSchema.parse(await req.json());
-    const isYT = YT_REGEX.test(data.url);
+    const isYT = data.url.match(YT_REGEX)
 
     if(!isYT){
       return NextResponse.json({
@@ -21,7 +21,8 @@ export async function POST(req:NextRequest){
       })
     }
     const  extractedUrl = data.url.split("?v=")[1]
-    await prismaClient.stream.create({
+
+    const stream = await prismaClient.stream.create({
        data:{
         userId: data.creatorId,
         url: data.url,
@@ -29,6 +30,11 @@ export async function POST(req:NextRequest){
         type: "Youtube"
        }
     })
+    return NextResponse.json({
+        message:"Added stream",
+       id: stream.id
+    })
+
  } catch(e){
     return NextResponse.json({
         message: "Error while adding a stream"
@@ -38,4 +44,18 @@ export async function POST(req:NextRequest){
 )
  }
  
+}
+
+export async function GET(req: NextRequest){
+
+  const creatorId = req.nextUrl.searchParams.get("creatorId");
+  const streams = await prismaClient.stream.findMany({
+    where:{
+        userId: creatorId ?? ""
+    }
+  })
+
+  return NextResponse.json({
+    streams
+  })
 }
