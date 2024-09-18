@@ -2,6 +2,7 @@
 import { signIn, signOut, useSession } from "next-auth/react"
 import { MusicIcon} from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button";
 
 export const Appbar = () =>{
     const session = useSession();
@@ -12,8 +13,8 @@ export const Appbar = () =>{
           <span className="ml-2 text-lg font-bold text-purple-400">FanTune</span>
         </Link>
         <nav className="ml-auto flex gap-4 sm:gap-6">
-          {session.data?.user && <button className="m-2 p-2 bg-blue-400" onClick={()=> signOut()}>Logout</button>}
-          {!session.data?.user && <button className="m-2 p-2 bg-blue-400" onClick={()=> signIn()}>Signin</button>} 
+          {!session.data?.user && <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={()=> signIn()}>Sign in</Button>}
+          {session.data?.user && <Button className="bg-purple-600 hover:bg-purple-700 text-white" onClick={()=> signOut()}>Log out</Button>} 
         </nav>
       </header>
         </div>

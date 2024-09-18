@@ -3,11 +3,13 @@ import { Input } from "@/components/ui/input"
 import { MusicIcon, UsersIcon, RadioIcon } from "lucide-react"
 import Link from "next/link"
 import { Appbar } from "./components/Appbar"
+import { Redirect } from "./components/Redirect"
 
 export default function MusicStreamLandingDarkConcise() {
   return (
     <div>
     <Appbar/>
+    <Redirect/>
     <div className="flex flex-col min-h-screen bg-gray-900 text-gray-100">
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-800">
