@@ -1,6 +1,8 @@
 import { prismaClient } from "@/app/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod"
+//@ts-ignore
+import youtubesearchapi from "youtube-search-api";
 const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
 
 const createStreamSchema = z.object({
@@ -21,6 +23,10 @@ export async function POST(req:NextRequest){
       })
     }
     const  extractedUrl = data.url.split("?v=")[1]
+    const res = await youtubesearchapi.GetVideoDetails(extractedUrl);
+    console.log(res.title)
+    console.log(res.thumbnail.thumbnails)
+    console.log(JSON.stringify(res.thumbnail.thumbnails))
 
     const stream = await prismaClient.stream.create({
        data:{
@@ -32,7 +38,7 @@ export async function POST(req:NextRequest){
     })
     return NextResponse.json({
         message:"Added stream",
-       id: stream.id
+        id: stream.id
     })
 
  } catch(e){
