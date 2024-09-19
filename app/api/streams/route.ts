@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import {z} from "zod"
 //@ts-expect-error frde
 import youtubesearchapi from "youtube-search-api";
-const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
+import { YT_REGEX } from "@/app/lib/utils";
+
 
 const createStreamSchema = z.object({
     creatorId: z.string(),
