@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(req: NextRequest){
-
+    
     const session = await getServerSession();
-
+    console.log(req)
    const user =  await prismaClient.user.findFirst({
     where:{
         email: session?.user?.email ?? ""
@@ -41,10 +41,12 @@ export async function GET(req: NextRequest){
   })
 
   return NextResponse.json({
+
     streams: streams.map(({_count, ...rest}) => ({
      ...rest,
      upvotes: _count.upvotes,
-
+     haveUpvoted: rest.upvotes.length ? true :false
     }))
+
   })
 }

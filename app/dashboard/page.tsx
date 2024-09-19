@@ -37,6 +37,7 @@ export default function Dashboard() {
     const interval = setInterval(() => {
       refreshStreams();
     }, REFRESH_INTERVAL_MS);
+    console.log(interval)
   })
 
   useEffect(() => {
