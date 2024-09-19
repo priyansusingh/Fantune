@@ -1,12 +1,8 @@
-module.exports = {
-    images: {
-      remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'img.youtube.com',
-          port: '',
-          pathname: '/account123/**',
-        },
-      ],
-    },
-  }
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+    domains: ['img.youtube.com',"i.ytimg.com"],
+  },
+}
+
+module.exports = nextConfig
