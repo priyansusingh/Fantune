@@ -9,12 +9,12 @@ const handler = NextAuth({
           clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? ""
         })
       ],
-  callbacks:{
+      secret: process.env.NEXTAUTH_SECRET ?? "secret",
+      callbacks:{
+
    async signIn(params){
 
-   
-
-      if(!params.user.email){
+     if(!params.user.email){
           return false;
       }
       console.log(params.user.email);

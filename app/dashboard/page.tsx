@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ThumbsUp, ThumbsDown, Music, Plus } from "lucide-react"
 import Image from "next/image"
+import axios from "axios"
+import { Appbar } from "../components/Appbar"
 
 interface Video {
   id: string
@@ -12,6 +14,8 @@ interface Video {
   votes: number
   thumbnail: string
 }
+
+const REFRESH_INTERVAL_MS = 10 * 1000;
 
 export default function Dashboard() {
   const [videos, setVideos] = useState<Video[]>([
@@ -21,6 +25,19 @@ export default function Dashboard() {
   ])
   const [newVideoLink, setNewVideoLink] = useState("")
   const [currentVideo, setCurrentVideo] = useState<Video | null>(null)
+
+  async function  refreshStreams() {
+    const res = axios.get(`/api/streams/my`,{
+      withCredentials:true
+    });
+    console.log(res);
+  }
+
+  useEffect(()=>{
+    const interval = setInterval(() => {
+      refreshStreams();
+    }, REFRESH_INTERVAL_MS);
+  })
 
   useEffect(() => {
     if (videos.length > 0 && !currentVideo) {
@@ -33,6 +50,13 @@ export default function Dashboard() {
     setVideos(videos.map(video => 
       video.id === id ? { ...video, votes: video.votes + (increment ? 1 : -1) } : video
     ).sort((a, b) => b.votes - a.votes))
+
+    fetch("/api/streams/upvote",{
+      method: "POST",
+      body: JSON.stringify({
+        streamId:id
+      })
+    })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,6 +91,8 @@ export default function Dashboard() {
   }
 
   return (
+    <div>
+      <Appbar/>
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black text-gray-100">
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -159,6 +185,7 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+    </div>
     </div>
   )
 }
